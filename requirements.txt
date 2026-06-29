@@ -1,0 +1,15 @@
+librosa 
+
+matplotlib 
+
+numpy 
+
+soundfile 
+
+pyaudio 
+
+pygame 
+
+scipy 
+
+anthropic 
