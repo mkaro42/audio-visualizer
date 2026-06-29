@@ -40,11 +40,61 @@ def plot_spectrogram(audio, sample_rate):
     plt.tight_layout()
     plt.show()
 
+## plotting the frequency spectrum ##
+
+def plot_frequency_spectrum(audio, sample_rate):
+    fft = np.fft.fft(audio)
+    magnitude = np.abs(fft)
+    frequency = np.fft.fftfreq(len(magnitude), d=1/sample_rate)
+    
+    # only plot positive frequencies
+    positive_freq_idx = frequency > 0
+    frequency = frequency[positive_freq_idx]
+    magnitude = magnitude[positive_freq_idx]
+    
+    plt.figure(figsize=(12, 4))
+    plt.plot(frequency, magnitude)
+    plt.title("Frequency Spectrum")
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Magnitude")
+    plt.tight_layout()
+    plt.show()
+
+##function to plot all at once##
+
+def plot_all(audio, sample_rate):
+    fig, axes = plt.subplots(3, 1, figsize=(12, 10))
+    
+    # Waveform
+    plt.sca(axes[0])
+    librosa.display.waveshow(audio, sr=sample_rate)
+    axes[0].set_title("Waveform")
+    axes[0].set_xlabel("Time (seconds)")
+    axes[0].set_ylabel("Amplitude")
+    
+    # Spectrogram
+    stft = librosa.stft(audio)
+    spectrogram_db = librosa.amplitude_to_db(np.abs(stft), ref=np.max)
+    plt.sca(axes[1])
+    librosa.display.specshow(spectrogram_db, sr=sample_rate, x_axis="time", y_axis="hz", ax=axes[1])
+    axes[1].set_title("Spectrogram")
+    
+    # Frequency Spectrum
+    fft = np.fft.fft(audio)
+    magnitude = np.abs(fft)
+    frequency = np.fft.fftfreq(len(magnitude), d=1/sample_rate)
+    positive_freq_idx = frequency > 0
+    axes[2].plot(frequency[positive_freq_idx], magnitude[positive_freq_idx])
+    axes[2].set_title("Frequency Spectrum")
+    axes[2].set_xlabel("Frequency (Hz)")
+    axes[2].set_ylabel("Magnitude")
+    
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     file_path = input("Enter the path to your audio file: ")
     audio, sample_rate = load_audio(file_path)
-    plot_waveform(audio, sample_rate)
-    plot_spectrogram(audio, sample_rate)
+    plot_all(audio, sample_rate)
 
 ## testing waveform file path ---> C:\Users\MaxKarolyi\OneDrive - NEWITY\Desktop\ocean.wav
