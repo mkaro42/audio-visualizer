@@ -13,3 +13,5 @@ pygame
 scipy 
 
 anthropic 
+
+langsmith
