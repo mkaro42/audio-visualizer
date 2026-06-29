@@ -45,11 +45,15 @@ def get_eq_suggestion(user_input, audio_stats):
     )
     
     response_text = message.content[0].text
+    response_text = response_text.strip()
+    response_text = response_text.replace("```json", "").replace("```", "").strip()
+    #added to see the raw claude response 
+    print(f"Raw response: {response_text}")
     return json.loads(response_text)
 
 ##testing function
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     test_stats = {
         "sample_rate": 44100,
         "duration": 3.5

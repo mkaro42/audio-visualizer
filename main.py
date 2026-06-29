@@ -3,6 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import soundfile as sf 
 
+from eq_llm import get_eq_suggestion
+from audio_filter import apply_filter
+
 ## Audio Loading ##
 
 def load_audio(file_path):
@@ -95,6 +98,36 @@ def plot_all(audio, sample_rate):
 if __name__ == "__main__":
     file_path = input("Enter the path to your audio file: ")
     audio, sample_rate = load_audio(file_path)
+    
+    audio_stats = {
+        "sample_rate": sample_rate,
+        "duration": librosa.get_duration(y=audio, sr=sample_rate)
+    }
+    
     plot_all(audio, sample_rate)
+    
+    print("\nEQ Assistant ready! Type your EQ request or 'quit' to exit.")
+    while True:
+        user_input = input("\nEQ Request: ")
+        if user_input.lower() == "quit":
+            break
+    
+        result = get_eq_suggestion(user_input, audio_stats)
+        print(f"\nEQ Suggestion:")
+        print(f"Frequency: {result['frequency']} Hz")
+        print(f"Filter type: {result['filter_type']}")
+        print(f"Gain: {result['gain']} dB")
+        print(f"Explanation: {result['explanation']}")
+    
+        filtered_audio = apply_filter(
+            audio, 
+            sample_rate, 
+            result['frequency'], 
+            result['filter_type'], 
+            result['gain']
+        )
+    
+        print("\nUpdating visualizations...")
+        plot_all(filtered_audio, sample_rate)
 
 ## testing waveform file path ---> C:\Users\MaxKarolyi\OneDrive - NEWITY\Desktop\ocean.wav
