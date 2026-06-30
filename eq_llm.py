@@ -2,7 +2,15 @@ import anthropic
 import json
 from dotenv import load_dotenv
 import os
+from langsmith import traceable 
 
+load_dotenv()
+
+print(f"LangSmith API Key found: {bool(os.getenv('LANGSMITH_API_KEY'))}")
+print(f"LangSmith Project: {os.getenv('LANGSMITH_PROJECT')}")
+print(f"LangSmith Tracing: {os.getenv('LANGSMITH_TRACING')}")
+
+@traceable
 def get_eq_suggestion(user_input, audio_stats):
     load_dotenv()
     client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
