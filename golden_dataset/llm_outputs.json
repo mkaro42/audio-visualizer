@@ -1,0 +1,82 @@
+{
+    "highpass_5k": {
+        "prompt": "apply a highpass filter above 5000 hz",
+        "llm_response": {
+            "effect_name": "Highpass Filter 5kHz",
+            "bands": [
+                {
+                    "frequency": 5000,
+                    "filter_type": "highpass",
+                    "gain": 0
+                }
+            ],
+            "explanation": "Applies a highpass filter with a cutoff at 5000 Hz, removing all frequencies below 5 kHz. This will strip out bass, low mids, and most midrange content, leaving only the upper presence and air frequencies \u2014 cymbals, sibilance, and high-frequency detail will remain while everything below will be cut."
+        }
+    },
+    "lowpass_5k": {
+        "prompt": "apply a lowpass filter below 5000 hz",
+        "llm_response": {
+            "effect_name": "Lowpass 5000Hz",
+            "bands": [
+                {
+                    "frequency": 5000,
+                    "filter_type": "lowpass",
+                    "gain": 0
+                }
+            ],
+            "explanation": "Applies a lowpass filter with a cutoff at 5000 Hz, allowing all frequencies below 5000 Hz to pass through while attenuating everything above. This removes high-frequency content like air, brilliance, and harsh transients, resulting in a warmer, softer sound."
+        }
+    },
+    "bandpass_1k_2k": {
+        "prompt": "apply a bandpass filter between 1000 and 2000 hz",
+        "llm_response": {
+            "effect_name": "Bandpass 1000-2000 Hz",
+            "bands": [
+                {
+                    "frequency": 1500,
+                    "filter_type": "bandpass",
+                    "gain": 0
+                }
+            ],
+            "explanation": "A bandpass filter centered at 1500 Hz isolates the frequency range between 1000 and 2000 Hz. This removes both low-end rumble and high-frequency content, leaving only the midrange frequencies in that window. This range sits in the presence and upper-mid region, which contains key elements like vocal consonants, guitar body, and melodic definition."
+        }
+    },
+    "bandpass_combo": {
+        "prompt": "apply a bandpass between 1000 and 2000 hz and another between 7000 and 8000 hz",
+        "llm_response": {
+            "effect_name": "Dual Bandpass",
+            "bands": [
+                {
+                    "frequency": 1500,
+                    "filter_type": "bandpass",
+                    "gain": 0
+                },
+                {
+                    "frequency": 7500,
+                    "filter_type": "bandpass",
+                    "gain": 0
+                }
+            ],
+            "explanation": "Two bandpass filters are applied: the first centered at 1500 Hz covers the 1000\u20132000 Hz range, isolating upper midrange frequencies that add presence and clarity to vocals and instruments. The second is centered at 7500 Hz covering 7000\u20138000 Hz, isolating the upper presence range where air, shimmer, and fine detail in cymbals and high-frequency transients live. Everything outside these two bands is attenuated."
+        }
+    },
+    "band_reject": {
+        "prompt": "apply a band reject filter removing frequencies between 1000 and 5000 hz",
+        "llm_response": {
+            "effect_name": "Band Reject 1k-5kHz",
+            "bands": [
+                {
+                    "frequency": 500,
+                    "filter_type": "lowpass",
+                    "gain": 0
+                },
+                {
+                    "frequency": 6000,
+                    "filter_type": "highpass",
+                    "gain": 0
+                }
+            ],
+            "explanation": "A band reject (notch) filter implemented by combining a lowpass filter at 500Hz and a highpass filter at 6000Hz. This removes all frequencies between 1000Hz and 5000Hz, which contains upper midrange and presence frequencies including consonants in speech, guitar bite, and keyboard attack. The result will sound hollow and scooped, with only low-end body and high-frequency air remaining."
+        }
+    }
+}

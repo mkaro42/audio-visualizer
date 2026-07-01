@@ -1,0 +1,67 @@
+{
+    "highpass_5k": {
+        "prompt": "apply a highpass filter above 5000 hz",
+        "effect_name": "Highpass 5k",
+        "bands": [
+            {
+                "frequency": 5000,
+                "filter_type": "highpass",
+                "gain": 0
+            }
+        ]
+    },
+    "lowpass_5k": {
+        "prompt": "apply a lowpass filter below 5000 hz",
+        "effect_name": "Lowpass 5k",
+        "bands": [
+            {
+                "frequency": 5000,
+                "filter_type": "lowpass",
+                "gain": 0
+            }
+        ]
+    },
+    "bandpass_1k_2k": {
+        "prompt": "apply a bandpass filter between 1000 and 2000 hz",
+        "effect_name": "Bandpass 1k-2k",
+        "bands": [
+            {
+                "frequency": 1500,
+                "filter_type": "bandpass",
+                "gain": 0
+            }
+        ]
+    },
+    "bandpass_combo": {
+        "prompt": "apply a bandpass between 1000 and 2000 hz and another between 7000 and 8000 hz",
+        "effect_name": "Bandpass Combo 1k-2k and 7k-8k",
+        "bands": [
+            {
+                "frequency": 1500,
+                "filter_type": "bandpass",
+                "gain": 0
+            },
+            {
+                "frequency": 7500,
+                "filter_type": "bandpass",
+                "gain": 0
+            }
+        ]
+    },
+    "band_reject": {
+        "prompt": "apply a band reject filter removing frequencies between 1000 and 5000 hz",
+        "effect_name": "Band Reject 1k-5k",
+        "bands": [
+            {
+                "frequency": 500,
+                "filter_type": "lowpass",
+                "gain": 0
+            },
+            {
+                "frequency": 5000,
+                "filter_type": "highpass",
+                "gain": 0
+            }
+        ]
+    }
+}
