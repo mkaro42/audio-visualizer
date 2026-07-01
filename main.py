@@ -1,12 +1,23 @@
-import librosa 
-import numpy as np 
+import librosa
+import numpy as np
 import matplotlib.pyplot as plt
-import soundfile as sf 
-import pygame 
+import soundfile as sf
+import pygame
 import os
+
+# rich.console.Console is the main entry point for all rich output -
+# swap in for print() anywhere you want styled/formatted text
+from rich.console import Console
+# Panel draws a bordered box around content, like the old hand-drawn banner
+from rich.panel import Panel
+# Table renders column-aligned data (we use it for the EQ bands result)
+from rich.table import Table
 
 from eq_llm import get_eq_suggestion
 from audio_filter import apply_filter
+
+# one shared Console instance - reuse this everywhere instead of print()
+console = Console()
 
 ## Audio Loading ##
 
@@ -130,27 +141,28 @@ if __name__ == "__main__":
     }
     
     plot_all(audio_original, sample_rate)
-    
-    print("""
-╔════════════════════════════════════════╗
-║         AUDIO EQ ASSISTANT            ║
-╠════════════════════════════════════════╣
-║  Commands:                            ║
-║   • Type anything  → EQ request       ║
-║   • play           → hear filtered    ║
-║   • play original  → hear original    ║
-║   • reset          → restore original ║
-║   • quit           → exit             ║
-╚════════════════════════════════════════╝
-""")
+
+    # Panel wraps text/renderables in a border. "[bold cyan]...[/bold cyan]"
+    # is rich's markup syntax - tags like print() f-strings but for styling.
+    # title/border_style/box are just cosmetic knobs on the Panel itself.
+    help_text = (
+        "[bold]Commands:[/bold]\n"
+        "  Type anything    -> EQ request\n"
+        "  play              -> hear filtered\n"
+        "  play original     -> hear original\n"
+        "  reset             -> restore original\n"
+        "  quit              -> exit"
+    )
+    console.print(Panel(help_text, title="Audio EQ Assistant", border_style="cyan"))
+
     while True:
         user_input = input("EQ Request (or command): ")
-        
+
         if user_input.lower() == "quit":
             break
         elif user_input.lower() == "reset":
             audio_filtered[0] = np.array(audio_original, dtype=np.float32)
-            print("Audio reset to original!")
+            console.print("[yellow]Audio reset to original![/yellow]")
             plot_all(audio_filtered[0], sample_rate)
             continue
         elif user_input.lower() == "play":
@@ -159,17 +171,34 @@ if __name__ == "__main__":
         elif user_input.lower() == "play original":
             play_audio(audio_original, sample_rate)
             continue
-        
-        result = get_eq_suggestion(user_input, audio_stats)
-        print(f"\nEffect: {result['effect_name']}")
-        print(f"Explanation: {result['explanation']}")
-        
+
+        # console.status() shows a spinner + message while the "with" block
+        # runs, then clears itself automatically when the block exits.
+        # Useful here because the Claude API call has no other progress signal.
+        with console.status("[bold cyan]Asking Claude for an EQ suggestion...[/bold cyan]"):
+            result = get_eq_suggestion(user_input, audio_stats)
+
+        # Table gives us column-aligned output for the filter bands, instead
+        # of manually padding strings with f-strings.
+        table = Table(title=f"Effect: {result['effect_name']}")
+        table.add_column("Frequency (Hz)", justify="right")
+        table.add_column("Filter Type")
+        table.add_column("Gain (dB)", justify="right")
+
+        for band in result["bands"]:
+            table.add_row(
+                str(band["frequency"]),
+                band["filter_type"],
+                str(band["gain"]),
+            )
+
+        console.print(table)
+        console.print(f"[italic]{result['explanation']}[/italic]")
+
         audio_filtered[0] = apply_filter(audio_filtered[0], sample_rate, result)
         plot_all(audio_filtered[0], sample_rate)
 
-        print(f"\n✓ Effect applied: {result['effect_name']}")
-        print(f"  {result['explanation']}")
-        print(f"\n  Type 'play' to hear it or make another request.")
+        console.print("[green]Effect applied.[/green] Type 'play' to hear it or make another request.")
 
 
 ## testing waveform file path ---> C:\Users\MaxKarolyi\OneDrive - NEWITY\Desktop\ocean.wav

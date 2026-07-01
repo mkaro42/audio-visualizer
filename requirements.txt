@@ -17,3 +17,5 @@ anthropic
 langsmith
 
 python-dotenv
+
+rich

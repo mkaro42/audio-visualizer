@@ -8,6 +8,10 @@ from audio_filter import apply_filter
 from dotenv import load_dotenv
 import os
 
+#too pull in my langsmith custom evaluators
+from langsmith.evaluation import evaluate, LangChainStringEvaluator
+
+
 load_dotenv()
 
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -113,7 +117,9 @@ if __name__ == "__main__":
         evaluators=[
             evaluate_filter_type,
             evaluate_frequency_accuracy,
-            evaluate_band_count
+            evaluate_band_count,
+            LangChainStringEvaluator("eq-correctness-evaluator2")  # my playground evaluator
+
         ],
         experiment_prefix="golden-filter-eval"
     )
